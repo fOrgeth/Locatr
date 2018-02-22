@@ -1,5 +1,6 @@
 package th.forge.locatr;
 
+import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
 
@@ -45,7 +46,7 @@ public class FlickrFetchr {
                 throw new IOException(connection.getResponseMessage() +
                         ": with " + urlSpec);
             }
-            int bytesRead = 0;
+            int bytesRead;
             byte[] buffer = new byte[1024];
             while ((bytesRead = in.read(buffer)) > 0) {
                 out.write(buffer, 0, bytesRead);
@@ -62,6 +63,19 @@ public class FlickrFetchr {
         return new String(getUrlBytes(urlSpec));
     }
 
+    private String buildUrl(Location location) {
+        return ENDPOINT.buildUpon()
+                .appendQueryParameter("method", SEARCH_METHOD)
+                .appendQueryParameter("lat", "" + location.getLatitude())
+                .appendQueryParameter("lon", "" + location.getLongitude())
+                .build().toString();
+    }
+
+    public List<GalleryItem> searchPhotos(Location location) {
+        String url = buildUrl(location);
+        return downloadGalleryItems(url);
+    }
+
     private String buildUrl(String method, String query, Integer page) {
         Uri.Builder uriBuilder = ENDPOINT.buildUpon()
                 .appendQueryParameter("method", method);
@@ -73,17 +87,12 @@ public class FlickrFetchr {
                 uriBuilder.appendQueryParameter("page", String.valueOf(page));
                 break;
         }
-        /*if (method.equals(SEARCH_METHOD)) {
-            uriBuilder.appendQueryParameter("text", query);
-        } else if (method.equals(FETCH_RECENTS_METHOD)) {
-            uriBuilder.appendQueryParameter("page", String.valueOf(page));
-        }*/
         return uriBuilder.build().toString();
     }
 
     public List<GalleryItem> fetchRecentPhotos(int page) {
         String url = buildUrl(FETCH_RECENTS_METHOD, null, page);
-        Log.d(TAG, "URL: "+url);
+        Log.d(TAG, "URL: " + url);
         return downloadGalleryItems(url);
     }
 
@@ -95,21 +104,8 @@ public class FlickrFetchr {
     private List<GalleryItem> downloadGalleryItems(String url) {
 
         List<GalleryItem> items = new ArrayList<>();
-//        Log.d(TAG, "Loading page " + page);
         try {
-            /*String url = Uri.parse("https://api.flickr.com/services/rest/")
-                    .buildUpon()
-                    .appendQueryParameter("method", FETCH_RECENTS_METHOD)
-                    .appendQueryParameter("api_key", API_KEY)
-                    .appendQueryParameter("format", "json")
-                    .appendQueryParameter("nojsoncallback", "1")
-                    .appendQueryParameter("page", String.valueOf(page))
-                    .appendQueryParameter("extras", "url_s")
-                    .build()
-                    .toString();*/
-
             String jsonString = getUrlString(url);
-//            Log.d(TAG, "Received JSON: " + jsonString);
             items = parseItems(jsonString);
 
         } catch (IOException ioe) {

@@ -44,12 +44,6 @@ public class LocatrFragment extends Fragment {
 
                     }
                 })
-                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Toast.makeText(getActivity(), "111", Toast.LENGTH_LONG).show();
-                    }
-                })
                 .build();
     }
 
