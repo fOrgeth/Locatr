@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Locatr.iml" filepath="$PROJECT_DIR$/Locatr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Locatr.iml" filepath="$PROJECT_DIR$/.idea/Locatr.iml" />
+      <module fileurl="file://C:\Users\fOrge\AndroidStudio\BigNerdRanch\Locatr\Locatr.iml" filepath="C:\Users\fOrge\AndroidStudio\BigNerdRanch\Locatr\Locatr.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\fOrge\AndroidStudio\BigNerdRanch\Locatr\app\app.iml" filepath="C:\Users\fOrge\AndroidStudio\BigNerdRanch\Locatr\app\app.iml" />
     </modules>
   </component>
 </project>
