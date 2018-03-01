@@ -123,6 +123,11 @@ public class LocatrFragment extends Fragment {
                 if (hasLocationPermission()) {
                     findImage();
                 } else {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), LOCATION_PERMISSIONS[0])
+                            && ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), LOCATION_PERMISSIONS[1])) {
+                        RequestPermissionDialogFragment requestDialog = new RequestPermissionDialogFragment();
+                        requestDialog.show(getFragmentManager(), "dialog");
+                    }
                     requestPermissions(LOCATION_PERMISSIONS,
                             REQUEST_LOCATION_PERMISSIONS);
                 }
