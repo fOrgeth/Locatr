@@ -2,6 +2,8 @@ package th.forge.locatr;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,8 +13,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -125,11 +129,10 @@ public class LocatrFragment extends Fragment {
                 } else {
                     if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), LOCATION_PERMISSIONS[0])
                             && ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), LOCATION_PERMISSIONS[1])) {
-                        RequestPermissionDialogFragment requestDialog = new RequestPermissionDialogFragment();
-                        requestDialog.show(getFragmentManager(), "dialog");
+                        new RequestPermissionDialogFragment().show(getFragmentManager(), "dialog");
+                    } else {
+                        requestPermissions(LOCATION_PERMISSIONS, REQUEST_LOCATION_PERMISSIONS);
                     }
-                    requestPermissions(LOCATION_PERMISSIONS,
-                            REQUEST_LOCATION_PERMISSIONS);
                 }
                 return true;
             default:
@@ -183,5 +186,34 @@ public class LocatrFragment extends Fragment {
         super.onStop();
 
         mClient.disconnect();
+    }
+
+    public static class RequestPermissionDialogFragment extends DialogFragment {
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.permission_dialog_fragment)
+                    .setPositiveButton(R.string.perm_dialog_ok_btn, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dismiss();
+                        }
+                    });
+            return builder.create();
+        }
+
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            super.onDismiss(dialog);
+            requestPermissions(LOCATION_PERMISSIONS, REQUEST_LOCATION_PERMISSIONS);
+        }
+
+        @Override
+        public void onCancel(DialogInterface dialog) {
+            super.onCancel(dialog);
+            requestPermissions(LOCATION_PERMISSIONS, REQUEST_LOCATION_PERMISSIONS);
+        }
     }
 }
