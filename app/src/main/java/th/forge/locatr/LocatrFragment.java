@@ -3,6 +3,7 @@ package th.forge.locatr;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -25,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -38,6 +40,7 @@ import java.util.List;
 public class LocatrFragment extends Fragment {
     private ImageView mImageView;
     private GoogleApiClient mClient;
+    private ProgressBar mProgressBar;
 
     private static final String TAG = "LocatrFargment";
     private static final String[] LOCATION_PERMISSIONS = new String[]{
@@ -76,6 +79,8 @@ public class LocatrFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_locatr, container, false);
         mImageView = v.findViewById(R.id.image);
+        mProgressBar = v.findViewById(R.id.loading_bar);
+        mProgressBar.setVisibility(View.GONE);
         return v;
     }
 
@@ -157,6 +162,14 @@ public class LocatrFragment extends Fragment {
         private Bitmap mBitmap;
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (mBitmap == null) {
+                mProgressBar.setVisibility(View.VISIBLE);
+            }
+        }
+
+        @Override
         protected Void doInBackground(Location... params) {
             FlickrFetchr fetchr = new FlickrFetchr();
             List<GalleryItem> items = fetchr.searchPhotos(params[0]);
@@ -177,6 +190,7 @@ public class LocatrFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void result) {
+            mProgressBar.setVisibility(View.GONE);
             mImageView.setImageBitmap(mBitmap);
         }
     }
