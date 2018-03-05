@@ -32,15 +32,16 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.SupportMapFragment;
 
 import java.io.IOException;
 import java.util.List;
 
 
-public class LocatrFragment extends Fragment {
-    private ImageView mImageView;
+public class LocatrFragment extends SupportMapFragment {
+//    private ImageView mImageView;
     private GoogleApiClient mClient;
-    private ProgressBar mProgressBar;
+//    private ProgressBar mProgressBar;
 
     private static final String TAG = "LocatrFargment";
     private static final String[] LOCATION_PERMISSIONS = new String[]{
@@ -74,7 +75,7 @@ public class LocatrFragment extends Fragment {
                 .build();
     }
 
-    @Nullable
+    /*@Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_locatr, container, false);
@@ -82,7 +83,7 @@ public class LocatrFragment extends Fragment {
         mProgressBar = v.findViewById(R.id.loading_bar);
         mProgressBar.setVisibility(View.GONE);
         return v;
-    }
+    }*/
 
     @Override
     public void onStart() {
@@ -165,7 +166,7 @@ public class LocatrFragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             if (mBitmap == null) {
-                mProgressBar.setVisibility(View.VISIBLE);
+//                mProgressBar.setVisibility(View.VISIBLE);
             }
         }
 
@@ -190,8 +191,8 @@ public class LocatrFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void result) {
-            mProgressBar.setVisibility(View.GONE);
-            mImageView.setImageBitmap(mBitmap);
+//            mProgressBar.setVisibility(View.GONE);
+//            mImageView.setImageBitmap(mBitmap);
         }
     }
 
