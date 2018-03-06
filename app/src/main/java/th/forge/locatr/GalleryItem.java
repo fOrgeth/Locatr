@@ -23,6 +23,14 @@ public class GalleryItem {
     @Expose
     private String mOwner;
 
+    @SerializedName("latitude")
+    @Expose
+    private double mLat;
+
+    @SerializedName("longitude")
+    @Expose
+    private double mLon;
+
     public String getCaption() {
         return mCaption;
     }
@@ -53,6 +61,22 @@ public class GalleryItem {
 
     public void setOwner(String owner) {
         mOwner = owner;
+    }
+
+    public double getLat() {
+        return mLat;
+    }
+
+    public void setLat(double lat) {
+        mLat = lat;
+    }
+
+    public double getLon() {
+        return mLon;
+    }
+
+    public void setLon(double lon) {
+        mLon = lon;
     }
 
     public Uri getPhotoPageUri() {

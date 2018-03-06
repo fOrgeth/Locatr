@@ -32,16 +32,29 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.io.IOException;
 import java.util.List;
 
 
 public class LocatrFragment extends SupportMapFragment {
-//    private ImageView mImageView;
+
+    /*    private ImageView mImageView;
+        private ProgressBar mProgressBar;*/
+
     private GoogleApiClient mClient;
-//    private ProgressBar mProgressBar;
+    private GoogleMap mMap;
+    private Bitmap mMapImage;
+    private GalleryItem mMapItem;
+    private Location mCurrentLocation;
+
 
     private static final String TAG = "LocatrFargment";
     private static final String[] LOCATION_PERMISSIONS = new String[]{
@@ -73,6 +86,13 @@ public class LocatrFragment extends SupportMapFragment {
                     }
                 })
                 .build();
+
+        getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                mMap = googleMap;
+            }
+        });
     }
 
     /*@Nullable
@@ -126,6 +146,22 @@ public class LocatrFragment extends SupportMapFragment {
         return result == PackageManager.PERMISSION_GRANTED;
     }
 
+    private void updateUI() {
+        if (mMap == null || mMapImage == null) {
+            return;
+        }
+
+        LatLng itemPoint = new LatLng(mMapItem.getLat(), mMapItem.getLon());
+        LatLng myPoint = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        LatLngBounds bounds = new LatLngBounds.Builder()
+                .include(itemPoint)
+                .include(myPoint)
+                .build();
+        int margin = getResources().getDimensionPixelSize(R.dimen.map_inset_margin);
+        CameraUpdate update = CameraUpdateFactory.newLatLngBounds(bounds, margin);
+        mMap.animateCamera(update);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -161,6 +197,7 @@ public class LocatrFragment extends SupportMapFragment {
     private class SearchTask extends AsyncTask<Location, Void, Void> {
         private GalleryItem mGalleryItem;
         private Bitmap mBitmap;
+        private Location mLocation;
 
         @Override
         protected void onPreExecute() {
@@ -172,6 +209,7 @@ public class LocatrFragment extends SupportMapFragment {
 
         @Override
         protected Void doInBackground(Location... params) {
+            mLocation = params[0];
             FlickrFetchr fetchr = new FlickrFetchr();
             List<GalleryItem> items = fetchr.searchPhotos(params[0]);
             if (items.size() == 0) {
@@ -193,6 +231,10 @@ public class LocatrFragment extends SupportMapFragment {
         protected void onPostExecute(Void result) {
 //            mProgressBar.setVisibility(View.GONE);
 //            mImageView.setImageBitmap(mBitmap);
+
+            mMapImage = mBitmap;
+            mMapItem = mGalleryItem;
+            mCurrentLocation = mLocation;
         }
     }
 
